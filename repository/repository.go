@@ -38,6 +38,16 @@ func (r *Repository) GetBookingDetails(userId uuid.UUID) (*models.Booking, bool,
 	return &booking, false, nil
 }
 
+func (r *Repository) GetEvents() ([]models.Events, error) {
+
+	var events []models.Events
+
+	if err := r.Db.Limit(10).Find(&events).Error; err != nil {
+		return nil, err
+	}
+	return events, nil
+}
+
 func (r *Repository) CreateBooking(booking *models.Booking) error {
 	return r.Db.Create(booking).Error
 }

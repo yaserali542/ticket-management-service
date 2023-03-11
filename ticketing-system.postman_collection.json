@@ -312,6 +312,58 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "get-events",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable(\"hmac\", CryptoJS.HmacSHA256(request.data, 'mysecret').toString(CryptoJS.digest));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Signature",
+								"value": "{{hmac}}",
+								"type": "default"
+							},
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjc4NTQ2NTcyfQ.im6N7GiAKenh_DlCPi4VDxtkhgfU5lqDl06-vAOlXzk",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_name\" : \"admin\",\r\n    \"event_id\" : \"f7bf5086-d99d-4a90-b394-44fb2a8546cc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8500/events",
+							"host": [
+								"localhost"
+							],
+							"port": "8500",
+							"path": [
+								"events"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

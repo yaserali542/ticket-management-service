@@ -46,7 +46,8 @@ func main() {
 	r := mux.NewRouter()
 	r.Use(middleware.ValidateRequest)
 	r.Use(middleware.ValidateJwtToken)
-	r.HandleFunc("/book-event", controller.BookEvent)
+	r.HandleFunc("/book-event", controller.BookEvent).Methods("POST")
+	r.HandleFunc("/events", controller.GetEvents).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8500", r))
 
 }

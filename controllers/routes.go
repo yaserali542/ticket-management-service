@@ -41,3 +41,16 @@ func (c *Controllers) BookEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(response)
 }
+
+func (c *Controllers) GetEvents(w http.ResponseWriter, r *http.Request) {
+
+	events, err := c.Services.GetEvents()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Add("Content-type", "application/json; charset=utf-8")
+	json.NewEncoder(w).Encode(events)
+}

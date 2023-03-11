@@ -121,3 +121,7 @@ func (s *TicketManagementService) BookEvent(request models.BookEventRequest, use
 		HashedData: base64.StdEncoding.EncodeToString(hashEncryptedData),
 	}, nil
 }
+
+func (s *TicketManagementService) GetEvents() ([]models.Events, error) {
+	return s.Repository.GetEvents()
+}
