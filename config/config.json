@@ -1,0 +1,19 @@
+{
+    "database": {
+        "host": "localhost",
+        "port": "5432",
+        "database_name": "postgres",
+        "username": "postgres",
+        "password": "admin"
+    }, 
+    "jwt":{
+        "expire-time-minutes" : 30,
+        "refresh-time-minutes" :25,
+        "key": "my_secret_key"
+    },
+    "pw_hash_bytes" : 64,
+    "pw_salt_bytes" : 32,
+    "hmac_secret": "mysecret",
+    "account_service_url": "http://localhost:8000"
+
+}
