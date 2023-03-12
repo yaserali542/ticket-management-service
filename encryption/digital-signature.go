@@ -54,13 +54,11 @@ func EncryptMessageUsingPublicKey(message string) []byte {
 }
 func DecryptMessageUsingPrivateKey(cipherText []byte) string {
 	decMessage, err := rsa.DecryptOAEP(sha256.New(), rand.Reader, privateKey, cipherText, nil)
-	fmt.Printf("Original: %s\n", string(decMessage))
+	fmt.Printf("Decrypted: %s\n", string(decMessage))
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println("Encrypted message: ", string(cipherText))
-	return string(cipherText)
+	return string(decMessage)
 }
 func SignMessage(message []byte) string {
 	//msgHashSum := CalculateHmac(message)
@@ -74,7 +72,5 @@ func SignMessage(message []byte) string {
 }
 
 func VerifySignature(signature, message []byte) error {
-	msgHashSum := CalculateHmac(message)
-	return rsa.VerifyPSS(publicKey, crypto.SHA256, []byte(msgHashSum), signature, nil)
-
+	return rsa.VerifyPSS(publicKey, crypto.SHA256, message, signature, nil)
 }

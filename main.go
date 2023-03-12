@@ -48,6 +48,9 @@ func main() {
 	r.Use(middleware.ValidateJwtToken)
 	r.HandleFunc("/book-event", controller.BookEvent).Methods("POST")
 	r.HandleFunc("/events", controller.GetEvents).Methods("GET")
+	r.HandleFunc("/qrscan-verify", controller.GetQRCodeDetails).Methods("POST")
+	r.HandleFunc("/booking/{id}", controller.GetBookingFromId).Methods("GET")
+	r.HandleFunc("/booking", controller.GetUserBookings).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8500", r))
 
 }

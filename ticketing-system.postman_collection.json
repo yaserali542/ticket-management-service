@@ -86,7 +86,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"first_name\" : \"john\",\r\n    \"last_name\": \"doe\",\r\n    \"profile_picture\": \"sdfghjjgfdsa\",\r\n    \"user_name\" : \"xyz\",\r\n    \"email_address\" : \"xyz@gmail.com\",\r\n    \"password\" : \"doe\"\r\n}",
+							"raw": "{\r\n    \"first_name\" : \"savvas\",\r\n    \"last_name\": \"kattimeris\",\r\n    \"profile_picture\": \"sdfghjjgfdsa\",\r\n    \"user_name\" : \"savvasK\",\r\n    \"email_address\" : \"savvas@gmail.com\",\r\n    \"password\" : \"admin\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -129,13 +129,13 @@
 							},
 							{
 								"key": "token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjc4MzM1MjkyfQ.CmlScpQufWP39DgX_8bmJmLH9f2jgLt-eAORCPTK3to",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjc4NTA3MTU5fQ.DThVVAsRkMUaGFe1YV2iSPhfV1YZFkIVZAFhXcOxeYM",
 								"type": "default"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"user_name\" : \"admin\"\r\n}",
+							"raw": "{\r\n    \"user_name\" : \"savvasK\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -287,7 +287,7 @@
 							},
 							{
 								"key": "token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjc4NTEwMzY3fQ.e17jJEYvoHnU9tNtlCa55SBtiRmZZIy9nBv53X_ozhk",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjc4NjAyMTQzfQ.aFWjszMwxE0EZJZ7I_eQGJMsH3WvMRbN4ZhXJsbnMgw",
 								"type": "default"
 							}
 						],
@@ -308,6 +308,55 @@
 							"port": "8500",
 							"path": [
 								"book-event"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "qrscan-verify",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable(\"hmac\", CryptoJS.HmacSHA256(request.data, 'mysecret').toString(CryptoJS.digest));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Signature",
+								"value": "{{hmac}}",
+								"type": "default"
+							},
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjc4NjAyMTQzfQ.aFWjszMwxE0EZJZ7I_eQGJMsH3WvMRbN4ZhXJsbnMgw",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"digital_signature\" : \"YHLLtBW9JsvnViB++lBSimNRnups+qFqXG/1bCn+94W581u/vdv5cK/8AJzWu9R9BgRBqFAqaDP2rSCpD/adrtXfJF/S0OagQTZFZJyqrBvGuMKWRwDjHceLp+Zok1FZ0/4i/7XKRYq7GeMiHzOVr/z+mB6D9d27Eq1RgWsXUF8sk9l35f7Xn4Wu3Ug09PmIOAdU8aIlut2lXU9GbuL4PSzKfuXi+Z/yhWshQdlNTok7fOPAQ/4R7hzJPYjFr8I9lVXe+tCn2nvAOx36P3AEv/LhwkMnPg0H7Gwvv+uCx4u2XykupzVAZ2yLF0IFcX3qkju5HY4BIS8zpk+e23makg==\"\r\n   \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8500/qrscan-verify",
+							"host": [
+								"localhost"
+							],
+							"port": "8500",
+							"path": [
+								"qrscan-verify"
 							]
 						}
 					},
@@ -360,6 +409,58 @@
 							"port": "8500",
 							"path": [
 								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-users-booking",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable(\"hmac\", CryptoJS.HmacSHA256(request.data, 'mysecret').toString(CryptoJS.digest));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Signature",
+								"value": "{{hmac}}",
+								"type": "default"
+							},
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjc4NjAyMTQzfQ.aFWjszMwxE0EZJZ7I_eQGJMsH3WvMRbN4ZhXJsbnMgw",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_name\" : \"admin\",\r\n    \"event_id\" : \"f7bf5086-d99d-4a90-b394-44fb2a8546cc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8500/booking",
+							"host": [
+								"localhost"
+							],
+							"port": "8500",
+							"path": [
+								"booking"
 							]
 						}
 					},

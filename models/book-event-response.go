@@ -8,4 +8,6 @@ type BookEventResponse struct {
 	EventDetails Events    `json:"event_details"`
 	HashedData   string    `json:"hashed-data"`
 	Otp          string    `json:"otp"`
+	UserId       string    `json:"user_id"`
+	UserName     string    `json:"user_name"`
 }

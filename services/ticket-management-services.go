@@ -73,13 +73,19 @@ func (s *TicketManagementService) BookEvent(request models.BookEventRequest, use
 	if err != nil {
 		return nil, err
 	}
-	booking, _, err := s.Repository.GetBookingDetails(userDetails.ID)
+	bookEventResponse, _, err := s.Repository.GetBookingDetails(userDetails.ID, userName)
 
 	if err != nil {
 		return nil, err
 	}
-	if booking != nil && booking.EventId == request.EventId {
-		return nil, errors.New("booking already exists for this user")
+
+	if bookEventResponse != nil {
+		for _, v := range bookEventResponse {
+			if v.EventDetails.ID == request.EventId {
+				return nil, errors.New("booking already exists for this user")
+			}
+
+		}
 	}
 
 	newBooking := &models.Booking{
@@ -119,9 +125,97 @@ func (s *TicketManagementService) BookEvent(request models.BookEventRequest, use
 		Signature:  digitalSignature,
 		Otp:        otp,
 		HashedData: base64.StdEncoding.EncodeToString(hashEncryptedData),
+		UserId:     userDetails.ID.String(),
+		UserName:   userDetails.UserName,
 	}, nil
 }
 
 func (s *TicketManagementService) GetEvents() ([]models.Events, error) {
 	return s.Repository.GetEvents()
+}
+
+func (s *TicketManagementService) GetBookingDetails(userName string, jwtToken string) ([]models.BookEventResponse, bool, error) {
+
+	userDetails, err := s.GetUserDetails(userName, jwtToken)
+
+	if err != nil {
+		return nil, false, err
+	}
+	return s.Repository.GetBookingDetails(userDetails.ID, userName)
+}
+
+func (s *TicketManagementService) GetQRCodeDetails(digitalSignature, jwtToken string) (*models.QRCodeDetails, error) {
+
+	bookingDetails, err := s.Repository.GetBookingDataFromSignature(digitalSignature)
+
+	if err != nil {
+		return nil, err
+	}
+
+	hashedData := encryption.CalculateHash(bookingDetails.QrEncryptedData)
+	sig, _ := base64.StdEncoding.DecodeString(digitalSignature)
+	if err := encryption.VerifySignature(sig, hashedData); err != nil {
+		return nil, err
+	}
+
+	var booking models.Booking
+	decryptedMessage := encryption.DecryptMessageUsingPrivateKey(bookingDetails.QrEncryptedData)
+
+	json.Unmarshal([]byte(decryptedMessage), &booking)
+
+	if booking.ID != bookingDetails.BookingId {
+		return nil, errors.New("data mismatch: invalid booking and bookingDetails")
+	}
+	accountDetails, err := s.GetUserDetailsById(booking.UserId.String(), jwtToken)
+	if err != nil {
+		return nil, err
+	}
+
+	eventDetails, err := s.Repository.GetEventDetails(booking.EventId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &models.QRCodeDetails{
+		BookingDetails: booking,
+		UserDetails:    *accountDetails,
+		EventDetails:   *eventDetails,
+		Otp:            bookingDetails.Otp,
+	}, nil
+
+}
+
+func (*TicketManagementService) GetUserDetailsById(id, jwtToken string) (*models.Account, error) {
+	url := fmt.Sprintf("%v/account/%v", viper.GetViper().GetString("account_service_url"), id)
+
+	req, _ := http.NewRequest(
+		"GET",
+		url,
+		nil,
+	)
+
+	// add a request header
+	req.Header.Add("token", jwtToken)
+
+	// send an HTTP using `req` object
+	res, err := http.DefaultClient.Do(req)
+	// check for response error
+	if err != nil {
+		return nil, err
+	}
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("invalid return status from :%v", url)
+	}
+	var accountDetails models.Account
+
+	// read response data
+	if err := json.NewDecoder(res.Body).Decode(&accountDetails); err != nil {
+		return nil, err
+	}
+
+	// close response body
+	res.Body.Close()
+
+	return &accountDetails, nil
+
 }
