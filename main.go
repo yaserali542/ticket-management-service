@@ -9,6 +9,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
 	"github.com/yaserali542/ticket-management-service/controllers"
+	"github.com/yaserali542/ticket-management-service/encryption"
 	"github.com/yaserali542/ticket-management-service/repository"
 	"github.com/yaserali542/ticket-management-service/services"
 )
@@ -37,6 +38,7 @@ func main() {
 		log.Fatal(err)
 		return
 	}
+	encryption.GenerateEdDSAKey()
 
 	rep := repository.Repository{Db: db}
 	service := services.TicketManagementService{Repository: &rep}

@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/mux"
@@ -16,6 +18,9 @@ type Controllers struct {
 }
 
 func (c *Controllers) BookEvent(w http.ResponseWriter, r *http.Request) {
+	start := time.Now().UnixNano() / int64(time.Millisecond)
+
+	// do something
 
 	var request models.BookEventRequest
 
@@ -41,6 +46,9 @@ func (c *Controllers) BookEvent(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Add("Content-type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(response)
+	end := time.Now().UnixNano() / int64(time.Millisecond)
+	diff := end - start
+	fmt.Printf("Duration(ms): %d", diff)
 }
 
 func (c *Controllers) GetEvents(w http.ResponseWriter, r *http.Request) {
